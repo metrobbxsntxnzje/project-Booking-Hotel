@@ -1,13 +1,24 @@
+const baseConfig = {
+	dialect: 'postgres',
+	logging: false,
+	pool: {
+	max: 5,
+	min: 0,
+	acquire: 30000,
+	idle: 10000,
+	},
+};
 module.exports = {
 	//TODO: Configuration settings for the development environment
 	//TODO: Thiết lập cấu hình cho môi trường development
 
 	development: {
+		...baseConfig, // Spread operator to include the base configuration settings
 		// Retrieve the database username from environment variables
 		// Lấy tên người dùng cơ sở dữ liệu từ biến môi trường
 		// Environment variables are used to keep sensitive information like credentials safe
 		// Biến môi trường được dùng để giữ an toàn cho thông tin nhạy cảm như thông tin đăng nhập
-		username: process.env.DB_USERNAME,
+		username: process.env.DB_USER,
 
 		// Retrieve the database password from environment variables
 		// Lấy mật khẩu cơ sở dữ liệu từ biến môi trường
@@ -22,6 +33,7 @@ module.exports = {
 		// Retrieve the name of the database from environment variables
 		// Lấy tên cơ sở dữ liệu từ biến môi trường
 		database: process.env.DB_NAME,
+		
 
 		// Specify the type of database we are using
 		// Chỉ định loại cơ sở dữ liệu đang sử dụng
@@ -29,6 +41,7 @@ module.exports = {
 		// 'postgres' là PostgreSQL, một hệ quản trị cơ sở dữ liệu quan hệ phổ biến
 		dialect: 'postgres',
 	},
+	
 
 	//TODO: Configuration settings for the staging environment
 	//TODO: Thiết lập cấu hình cho môi trường staging

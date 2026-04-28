@@ -1,4 +1,5 @@
 'use strict';
+require('dotenv').config();
 const fs = require('fs'); // Import the file system module to read files
 const path = require('path'); // Import the path module to handle file paths
 const Sequelize = require('sequelize'); // Import Sequelize to work with the database
