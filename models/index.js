@@ -31,14 +31,9 @@ if (config.use_env_variable) {
 
 // Authenticate with the database to ensure the connection is successful
 // Xác thực với cơ sở dữ liệu để bảo đảm kết nối thành công
-sequelize.authenticate().then(
-	() => {
-		logger.info('Sequelize authentication successful'); // Log success
-	},
-	(err) => {
-		logger.error('Sequelize authentication error', { err }); // Log error details
-	}
-);
+sequelize.authenticate()
+  .then(() => logger.info('Sequelize authentication successful'))
+  .catch((err) => logger.error('Sequelize authentication error', { err }));
 
 // Read and initialize model definitions from the current directory
 // Đọc và khởi tạo các định nghĩa model từ thư mục hiện tại

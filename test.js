@@ -19,3 +19,17 @@ const sequelize = new Sequelize(
     console.error('❌ Lỗi:', error);
   }
 })();
+
+(async  () => {
+  try {
+    await sequelize.authenticate();
+    console.log('✅ Kết nối thành công');
+
+    await sequelize.sync({ force: false });
+    console.log('✅ Tất cả bảng đã được tạo');
+
+  } catch (error) {
+    console.error('❌ Lỗi:', error);
+  }
+})
+

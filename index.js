@@ -1,11 +1,13 @@
 // Load environment variables from a .env file
 // Nạp biến môi trường từ tệp .env
-require('dotenv-flow').config();
+require('dotenv').config();
 
 // Import the Express.js framework to create a web server
 // Import framework Express.js để tạo web server
 const express = require('express');
 const app = express();
+const cookieParser = require('cookie-parser');
+
 
 // Import middleware for security and logging
 // Import middleware phục vụ bảo mật và ghi log
@@ -18,10 +20,16 @@ const logger = require('./utils/logger'); // Custom logging utility
 app.use(express.json()); // Automatically parses JSON data
 app.use(express.urlencoded({ extended: true })); // Parses URL-encoded data
 
+app.use(cookieParser());
+
 // Enable Cross-Origin Resource Sharing (CORS) for handling requests from different domains
 // Bật Cross-Origin Resource Sharing (CORS) để xử lý request từ các domain khác nhau
-app.use(cors());
-
+app.use(cors(
+{
+	origin: proces.evn.CLIENT_URL || 'http://localhost:3000',
+	credentials: true,
+}
+));
 // Use Helmet to set various HTTP headers for security
 // Dùng Helmet để thiết lập nhiều HTTP header phục vụ bảo mật
 app.use(helmet());
@@ -52,3 +60,18 @@ app.listen(port, () => {
 	// Ghi log để cho biết server đang chạy
 	logger.info(`App Listening on port ${port}`);
 });
+
+app.get('/healthy', (req, res) => res.json({status:'ok' , timestamp : nowDate() }))
+
+app.use((req, res)=> 
+	{
+		res.status(400).json({message :'Route ${req.method} ${req.path} không tồn tại'});
+
+	});
+app.use((req, res) =>
+	{
+		res.status(500).json({ message: 'Lỗi server không mong đợi', error: err.message });
+
+	}
+)
+module.exports = app;
