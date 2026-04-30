@@ -16,21 +16,43 @@ const authenticate = (req, res, next) => {
     next();
 };
 
-const authorize = (...role) => {
+const authorize = (...roles) => {
     return (req, res, next) => {
         if(req.user != user){
-            return res.status(401).json({Message: 'Người dùng không xác thực'})
+            return res.status(401).json({message: 'Người dùng không xác thực'})
         }
+        if (!roles.includes(req.user.role)) {
+            return res.status(403).json({
+            message: `Bạn không có quyền thực hiện hành động này. Yêu cầu role: ${roles.join(', ')}`,
+            });
     }
+    next();
+};
 }
-const authenticateAdmin = (req ,res, next) => {
+const authorizeStaff = (req, res, next) =>{
+    if(req.user.role === 'Admin'|| req.user.role === 'Partner')
+        return next();
+    if(req.user.role === 'Staff'){
+        const hotelId = parseInt(req.params.hotelId || req.body.hotelId);
+        if(req.user.hotel_id !== hotelId ){
+            return res.status(403).json({ message: 'Staff không có quyền thao tác hotel này' });
+        }
+        return next();
+    }
+    return res.status(403).json({ message: 'Không có quyền' });
 
-}
+};
+const authorizeHotelOwner = (req, res, next) => {
+    if (req.user.role === 'Admin') return next(); // Admin bypass
 
-const authenticateStaff = (req, res, next) => {
+    if (!req.hotel) {
+    return res.status(404).json({ message: 'Không tìm thấy hotel' });
+    }
 
-}
+    if (req.hotel.partnerId !== req.user.id) {
+        return res.status(403).json({ message: 'Bạn không có quyền thao tác với hotel này' });
+    }
 
-const authenticateOwner(req,res, next) => {
-
-}
+    next();
+    };
+module.export={authorize, authenticate, authorizeHotelOwner, authorizeStaff};
