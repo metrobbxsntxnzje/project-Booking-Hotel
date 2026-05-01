@@ -64,7 +64,6 @@ Object.keys(db).forEach((modelName) => {
 // Add the Sequelize instance and the Sequelize library to the db object
 // Thêm Sequelize instance và thư viện Sequelize vào object db
 db.sequelize = sequelize;
-db.Sequelize = Sequelize;
 
 // Export the db object so it can be used in other parts of the application
 // Export object db để dùng ở các phần khác của ứng dụng

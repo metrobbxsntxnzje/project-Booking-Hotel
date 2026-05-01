@@ -3,7 +3,7 @@ const {verifyAccessToken }  =  require('../utils/token');
 
 const authenticate = (req, res, next) => {
     const authHeader = req.headers['authorization']
-    if(!authHeader || !authenticate.startsWith('Bearer')){
+    if(!authHeader || !authHeader.startsWith('Bearer')){
         return res.status(400).json({message: ' Không có token xác thực'})
     }
     const tokenHeader =  authHeader.split('')[1];
@@ -18,7 +18,7 @@ const authenticate = (req, res, next) => {
 
 const authorize = (...roles) => {
     return (req, res, next) => {
-        if(req.user != user){
+        if(!req.user){
             return res.status(401).json({message: 'Người dùng không xác thực'})
         }
         if (!roles.includes(req.user.role)) {
@@ -52,7 +52,17 @@ const authorizeHotelOwner = (req, res, next) => {
     if (req.hotel.partnerId !== req.user.id) {
         return res.status(403).json({ message: 'Bạn không có quyền thao tác với hotel này' });
     }
-
     next();
     };
-module.export={authorize, authenticate, authorizeHotelOwner, authorizeStaff};
+const authorizeCustomer = (req, res, next) =>{
+    if(!req.user)
+        return res.status(401).json({message:'Chưa đăng nhập'});
+    if(req.user.role !== 'Customer')
+        return res.status(403).json({message:'Không phải user'})
+    // if (req.user.id !== req.user.id) 
+    //     return res.status(403).json({ message: 'Không được thao tác user khác' })
+
+    next();
+
+}
+module.exports={authorize, authenticate, authorizeHotelOwner, authorizeStaff};

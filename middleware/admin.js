@@ -10,11 +10,8 @@ const creds = JSON.parse(process.env.ADMIN_CREDS);
 /**
  * Middleware to check admin access 🔐
  * Middleware dùng để kiểm tra quyền truy cập admin 🔐
- * @param {typedefs.Req} req - The request object from the client
  * @param {typedefs.Req} req - Đối tượng request gửi từ client
- * @param {typedefs.Res} res - The response object to send back to the client
  * @param {typedefs.Res} res - Đối tượng response dùng để trả về cho client
- * @param {typedefs.Next} next - The function to call the next middleware
  * @param {typedefs.Next} next - Hàm dùng để gọi middleware tiếp theo
  */
 const adminQueryCreds = async (req, res, next) => {

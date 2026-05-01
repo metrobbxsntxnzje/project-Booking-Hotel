@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "checkJs": true,
+    "module": "CommonJS",
+    "target": "ES2022",
+    "maxNodeModuleJsDepth": 1
+  },
+  "exclude": [
+    "node_modules",
+    "logs",
+    "coverage",
+    "dist",
+    "build"
+  ]
+}

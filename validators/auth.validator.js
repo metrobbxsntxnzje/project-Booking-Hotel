@@ -76,5 +76,5 @@ const changePassword = [
     handleValidator
 ]
 
-module.export = {handleValidator , validateLogin, validateRegister}
+module.exports = {handleValidator , validateLogin, validateRegister}
 

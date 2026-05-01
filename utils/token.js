@@ -12,7 +12,7 @@ try {
 	publicKey = fs.readFileSync(process.env.PUBKEY)
 
 }catch(err){
-	console.warm("Khong tim thay RSA key , fallback ve HS256")
+	console.warn("Khong tim thay RSA key , fallback ve HS256")
 }
 const ACCESS_EXPIRES  = '15m';  
 const REFRESH_EXPIRES = '7d';
@@ -70,7 +70,7 @@ const generateAccessToken = (payload) =>
 jwt.sign(payload,privateKey, {algorithm: 'RS256',ACCESS_EXPIRES});
 
 const generateRefreshToken = (payload) =>
-jwt.verify(payload,privateKey, {algorithm : 'RS256', REFRESH_EXPIRES })
+jwt.sign(payload,privateKey, {algorithm : 'RS256', REFRESH_EXPIRES })
 
 const verifyAccessToken = (token) => 
 {
