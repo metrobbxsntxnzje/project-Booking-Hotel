@@ -1,7 +1,6 @@
 // Import the fs module for file system operations 🗂️
 // Import module fs để thao tác với hệ thống tệp 🗂️
 const fs = require('fs');
-
 // Import module jwt để làm việc với JSON Web Token (JWT) 🔑
 const jwt = require('jsonwebtoken');
 
@@ -55,7 +54,7 @@ const REFRESH_EXPIRES = '7d';
 /**
  * Verify a signed JWT using the public key
  * Xác thực JWT đã ký bằng public key
- * @param {jwt.JwtPayload} signedString - JWT đã ký cần xác thực
+ * @param {jwt.JwtPayload}  
  * @returns {string|any} - Dữ liệu token sau khi giải mã
  */
 // const verifySignedJWT = (signedString) => {

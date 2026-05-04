@@ -10,7 +10,7 @@ const Register = async ({fullName, email, password, phone, gender, birthDate}) =
     {
         const error = new Error('Email đã tồn tại');
         error.statusCode =409;
-        throw new error; 
+        throw  error; 
     }
     const hashed = await bcrypt.hash(password, SALT_ROUNDS);
     const user = await db.User.create({fullName,
@@ -29,8 +29,8 @@ const Login = async({email, password}) => {
     const user = await db.User.scope('withDeleted').findOne({where:{email}})
     if(!user){
         const error = new Error('Mật khẩu không tồn tại')
-        error.Statuscode = 401;
-        throw new error;
+        error.statuscode = 401;
+        throw  error;
     }
     if (user.deletedAt) {
 		const error = new Error('Tài khoản đã bị xóa');

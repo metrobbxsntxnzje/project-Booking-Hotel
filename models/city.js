@@ -11,13 +11,15 @@ module.exports = (sequelize, DataTypes) => {
   }
 
   City.init({
-    id:   { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING(255), allowNull: false },
+    deletedAt: { type: DataTypes.DATE },
   }, {
     sequelize,
     modelName: 'City',
     tableName: 'cities',
     timestamps: false,
+    paranoid: true,
   });
 
   return City;
