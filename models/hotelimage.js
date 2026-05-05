@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     id:        { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     hotelId:   { type: DataTypes.INTEGER, allowNull: false },
     imageUrl:  { type: DataTypes.STRING(255), allowNull: false },
-    isPrimary: { type: DataTypes.TINYINT, defaultValue: 0 },
+    isPrimary: { type: DataTypes.BOOLEAN, defaultValue: false },
   }, {
     sequelize,
     modelName: 'HotelImage',

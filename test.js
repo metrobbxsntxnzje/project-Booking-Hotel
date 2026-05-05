@@ -1,5 +1,7 @@
 require('dotenv').config();
 const { Sequelize } = require('sequelize');
+require('./models'); // 🔥 QUAN TRỌNG: load models trước
+
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,
@@ -11,25 +13,19 @@ const sequelize = new Sequelize(
   }
 );
 
+
+
+const db = require('./models');
+
 (async () => {
   try {
-    await sequelize.authenticate();
+    await db.sequelize.authenticate();
     console.log('✅ Kết nối thành công');
-  } catch (error) {
-    console.error('❌ Lỗi:', error);
+
+    await db.sequelize.sync({ alter: true }); // 🔥 CÓ MODEL MỚI TẠO TABLE
+
+    console.log('✅ Tất cả bảng đã được tạo');
+  } catch (err) {
+    console.error(err);
   }
 })();
-
-(async  () => {
-  try {
-    await sequelize.authenticate();
-    console.log('✅ Kết nối thành công');
-
-    await sequelize.sync({ force: false });
-    console.log('✅ Tất cả bảng đã được tạo');
-
-  } catch (error) {
-    console.error('❌ Lỗi:', error);
-  }
-})
-

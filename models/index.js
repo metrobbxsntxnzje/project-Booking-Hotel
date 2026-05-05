@@ -2,7 +2,7 @@
 require('dotenv').config();
 const fs = require('fs'); // Import the file system module to read files
 const path = require('path'); // Import the path module to handle file paths
-const Sequelize = require('sequelize'); // Import Sequelize to work with the database
+const { Sequelize, DataTypes } = require('sequelize'); // Import Sequelize to work with the database
 const logger = require('../utils/logger')(module); // Import a custom logger to track events
 
 const basename = path.basename(__filename); // Get the current file name (index.js)
@@ -32,8 +32,8 @@ if (config.use_env_variable) {
 // Authenticate with the database to ensure the connection is successful
 // Xác thực với cơ sở dữ liệu để bảo đảm kết nối thành công
 sequelize.authenticate()
-  .then(() => logger.info('Sequelize authentication successful'))
-  .catch((err) => logger.error('Sequelize authentication error', { err }));
+	.then(() => logger.info('Sequelize authentication successful'))
+	.catch((err) => logger.error('Sequelize authentication error', { err }));
 
 // Read and initialize model definitions from the current directory
 // Đọc và khởi tạo các định nghĩa model từ thư mục hiện tại
@@ -48,7 +48,7 @@ fs.readdirSync(__dirname) // Read the files in the current directory
 		// Import và khởi tạo từng file model
 		const model = require(path.join(__dirname, file))(
 			sequelize,
-			Sequelize.DataTypes
+			DataTypes
 		);
 		db[model.name] = model; // Add the model to the db object
 	});

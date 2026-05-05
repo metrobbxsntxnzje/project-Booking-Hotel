@@ -12,9 +12,33 @@ const { typedefs } = require('../typedefs');
 
 // Helper function to get the filename of the calling module 📁
 // Hàm trợ giúp để lấy tên tệp của module đang gọi 📁
-const getLabel = (callingModule) => {
-	const parts = callingModule.filename.split(path.sep);
-	return path.join(parts[parts.length - 2], parts.pop());
+// const getLabel = (callingModule) => {
+// 	const parts = callingModule.filename.split(path.sep);
+// 	return path.join(parts[parts.length - 2], parts.pop());
+// };
+
+const getLabel = (input) => {
+	if (!input) return 'unknown';
+
+	let filename;
+
+	// hỗ trợ cả __filename và module
+	if (typeof input === 'string') {
+		filename = input;
+	} else if (input.filename) {
+		filename = input.filename;
+	} else {
+		return 'unknown';
+	}
+
+	// lấy dạng: folder/file.js
+	const parts = filename.split(path.sep);
+
+	if (parts.length >= 2) {
+		return path.join(parts[parts.length - 2], parts[parts.length - 1]);
+	}
+
+	return parts[parts.length - 1];
 };
 
 // Helper function to format the metadata for logging 🛠️
@@ -56,6 +80,7 @@ const logger = (callingModule) => {
 		levels: config.npm.levels,
 		format: format.combine(
 			format.label({ label: getLabel(callingModule) }),
+
 			format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
 			logFormat
 		),
