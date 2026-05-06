@@ -7,7 +7,7 @@ const handleError=(res, error) => {
         return res.status(status).json({message:error.message || 'lỗi hệ thống'})
     
 }
-const register =async(req, res) => {
+const registerController =async(req, res) => {
     try{
         const user = await AuthService.Register(req.body);
     return res.status(201).json({message:'Đăng ký thành công', user});
@@ -16,7 +16,7 @@ const register =async(req, res) => {
         return handleError(res,error)
     }
 }
-const login = async (req, res) => {
+const loginController = async (req, res) => {
     try {
         const { accessToken, refreshToken, user } = await AuthService.Login(req.body);
         res.cookie('refreshToken', refreshToken, {
@@ -31,3 +31,5 @@ const login = async (req, res) => {
         return handleError(res,error)
     }
 }
+
+module.exports = {loginController,registerController }

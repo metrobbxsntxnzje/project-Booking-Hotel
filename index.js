@@ -31,6 +31,7 @@ app.use(helmet());
 app.use('/api/cities', cityRoutes);
 app.use('/api/wards', wardRoutes);
 app.use('/api/bedtypes', bedTypeRoutes)
+app.use('/api/amenities', require('./routes/amenity.route'))
 
 
 

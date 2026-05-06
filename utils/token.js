@@ -4,17 +4,40 @@ const fs = require('fs');
 // Import module jwt để làm việc với JSON Web Token (JWT) 🔑
 const jwt = require('jsonwebtoken');
 
-// Đọc khóa private và public từ các tệp được chỉ định trong biến môi trường
-let privateKey, publicKey;
-let useRSA = true;
-try {
-	privateKey = fs.readFileSync(process.env.PRIVKEY)
-	publicKey = fs.readFileSync(process.env.PUBKEY)
+const BASE_SIGN_OPTIONS = {
+	algorithm: process.env.ALGORITHM,
+	issuer: process.env.JWT_ISSUER,
+	audience: process.env.JWT_AUDIENCE,
+};
 
-} catch (err) {
-	console.warn("Khong tim thay RSA key , fallback ve HS256")
-	useRSA = false;
+const BASE_VERIFY_OPTIONS = {
+	algorithms: [process.env.ALGORITHM],
+	issuer: process.env.JWT_ISSUER,
+	audience: process.env.JWT_AUDIENCE,
+};
+
+// Đọc khóa private và public từ các tệp được chỉ định trong biến môi trường
+function loadKeys() {
+	const privPath = process.env.PRIVKEY;
+	const pubPath = process.env.PUBKEY;
+
+	if (!privPath || !pubPath) {
+		throw new Error('[JWT] Thiếu biến môi trường PRIVKEY hoặc PUBKEY');
+	}
+
+	let privateKey, publicKey;
+	try {
+		privateKey = fs.readFileSync(privPath);
+		publicKey = fs.readFileSync(pubPath);
+	} catch (err) {
+		throw new Error(`[JWT] Không thể đọc RSA key: ${err.message}`);
+	}
+
+	return { privateKey, publicKey };
 }
+
+const { privateKey, publicKey } = loadKeys();
+
 const ACCESS_EXPIRES = '15m';
 const REFRESH_EXPIRES = '7d';
 /**
@@ -66,27 +89,46 @@ const REFRESH_EXPIRES = '7d';
 // 		algorithms: ['RS256'],
 // 	});
 // };
-
-const generateAccessToken = (payload) =>
-	jwt.sign(payload, privateKey, { algorithm: 'RS256', expiresIn: ACCESS_EXPIRES });
+/**
+ * Validate payload trước khi sign.
+ * @param {object} payload
+ */
+function assertPayload(payload) {
+	if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+		throw new TypeError('[JWT] payload phải là một object hợp lệ');
+	}
+}
+function generateAccessToken(payload) {
+	assertPayload(payload);
+	return jwt.sign(payload, privateKey, {
+		...BASE_SIGN_OPTIONS,
+		expiresIn: ACCESS_EXPIRES,
+	});
+}
 
 const generateRefreshToken = (payload) =>
 	jwt.sign(payload, privateKey, { algorithm: 'RS256', expiresIn: REFRESH_EXPIRES })
 
 const verifyAccessToken = (token) => {
 	try {
-		return jwt.verify(token, publicKey, { algorithms: ['RS256'] });
+		return jwt.verify(
+			token, publicKey,
+			{
+				algorithms: ['RS256']
+			});
 	}
 	catch {
 		return null;
 	}
 }
 const verifyRefreshToken = (token) => {
-	try { return jwt.verify(token, publicKey, { algorithms: ['RS256'] }); }
+	try {
+		return jwt.verify(
+			token, publicKey,
+			{ algorithms: ['RS256'] });
+	}
 	catch { return null; }
 };
-// Export the functions for use in other files
-// Export các hàm để dùng ở những file khác
 module.exports = {
 	generateAccessToken,
 	generateRefreshToken,
