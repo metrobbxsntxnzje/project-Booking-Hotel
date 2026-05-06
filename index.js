@@ -9,6 +9,7 @@ const helmet = require('helmet').default;
 const logger = require('./utils/logger')(module)
 
 const cityRoutes = require('./routes/city');
+const wardRoutes = require('./routes/ward.route')
 const { dateForFilename } = require('./utils/dateFormatter');
 
 // middleware
@@ -25,6 +26,8 @@ app.use(helmet());
 
 // routes
 app.use('/api/cities', cityRoutes);
+app.use('/api/wards', wardRoutes);
+
 
 app.get('/healthy', (req, res) =>
 	res.json({ status: 'ok', timestamp: dateForFilename() })

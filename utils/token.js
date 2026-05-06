@@ -6,14 +6,16 @@ const jwt = require('jsonwebtoken');
 
 // Đọc khóa private và public từ các tệp được chỉ định trong biến môi trường
 let privateKey, publicKey;
+let useRSA = true;
 try {
 	privateKey = fs.readFileSync(process.env.PRIVKEY)
 	publicKey = fs.readFileSync(process.env.PUBKEY)
 
-}catch(err){
+} catch (err) {
 	console.warn("Khong tim thay RSA key , fallback ve HS256")
+	useRSA = false;
 }
-const ACCESS_EXPIRES  = '15m';  
+const ACCESS_EXPIRES = '15m';
 const REFRESH_EXPIRES = '7d';
 /**
  * Generate a JSON Web Token (JWT) using a secret key
@@ -65,25 +67,24 @@ const REFRESH_EXPIRES = '7d';
 // 	});
 // };
 
-const generateAccessToken = (payload) => 
-jwt.sign(payload,privateKey, {algorithm: 'RS256',ACCESS_EXPIRES});
+const generateAccessToken = (payload) =>
+	jwt.sign(payload, privateKey, { algorithm: 'RS256', expiresIn: ACCESS_EXPIRES });
 
 const generateRefreshToken = (payload) =>
-jwt.sign(payload,privateKey, {algorithm : 'RS256', REFRESH_EXPIRES })
+	jwt.sign(payload, privateKey, { algorithm: 'RS256', expiresIn: REFRESH_EXPIRES })
 
-const verifyAccessToken = (token) => 
-{
+const verifyAccessToken = (token) => {
 	try {
-		return jwt.verify(token,publicKey, { algorithms: ['RS256'] });
+		return jwt.verify(token, publicKey, { algorithms: ['RS256'] });
 	}
-	catch{
+	catch {
 		return null;
 	}
 }
 const verifyRefreshToken = (token) => {
 	try { return jwt.verify(token, publicKey, { algorithms: ['RS256'] }); }
 	catch { return null; }
-  };
+};
 // Export the functions for use in other files
 // Export các hàm để dùng ở những file khác
 module.exports = {
