@@ -1,19 +1,31 @@
 // Import the fs module for file system operations 🗂️
 // Import module fs để thao tác với hệ thống tệp 🗂️
+const jwt = require('jsonwebtoken')
+
 const fs = require('fs');
+function requireEnv(key) {
+	const val = process.env[key];
+	if (!val) throw new Error(`[JWT] Thiếu biến môi trường: ${key}`);
+	return val;
+}
+
+const ALGORITHM = requireEnv('JWT_ALGORITHM');
+const JWT_ISSUER = requireEnv('JWT_ISSUER');
+const JWT_AUDIENCE = requireEnv('JWT_AUDIENCE');
+const ACCESS_EXPIRES = requireEnv('JWT_ACCESS_EXPIRES');
+const REFRESH_EXPIRES = requireEnv('JWT_REFRESH_EXPIRES');
 // Import module jwt để làm việc với JSON Web Token (JWT) 🔑
-const jwt = require('jsonwebtoken');
-
+/** @type {import('jsonwebtoken').SignOptions} */
 const BASE_SIGN_OPTIONS = {
-	algorithm: process.env.ALGORITHM,
-	issuer: process.env.JWT_ISSUER,
-	audience: process.env.JWT_AUDIENCE,
+	algorithm: ALGORITHM,
+	issuer: JWT_ISSUER,
+	audience: JWT_AUDIENCE,
 };
-
+/** @type {import('jsonwebtoken').VerifyOptions} */
 const BASE_VERIFY_OPTIONS = {
-	algorithms: [process.env.ALGORITHM],
-	issuer: process.env.JWT_ISSUER,
-	audience: process.env.JWT_AUDIENCE,
+	algorithms: [ALGORITHM],
+	issuer: JWT_ISSUER,
+	audience: JWT_AUDIENCE,
 };
 
 // Đọc khóa private và public từ các tệp được chỉ định trong biến môi trường
@@ -38,8 +50,7 @@ function loadKeys() {
 
 const { privateKey, publicKey } = loadKeys();
 
-const ACCESS_EXPIRES = '15m';
-const REFRESH_EXPIRES = '7d';
+
 /**
  * Generate a JSON Web Token (JWT) using a secret key
  * Tạo JSON Web Token (JWT) bằng secret key
@@ -106,32 +117,31 @@ function generateAccessToken(payload) {
 	});
 }
 
-const generateRefreshToken = (payload) =>
-	jwt.sign(payload, privateKey, { algorithm: 'RS256', expiresIn: REFRESH_EXPIRES })
-
-const verifyAccessToken = (token) => {
-	try {
-		return jwt.verify(
-			token, publicKey,
-			{
-				algorithms: ['RS256']
-			});
-	}
-	catch {
-		return null;
-	}
+function generateRefreshToken(payload) {
+	assertPayload(payload);
+	return jwt.sign(payload, privateKey, {
+		...BASE_SIGN_OPTIONS,
+		expiresIn: REFRESH_EXPIRES,
+	});
 }
-const verifyRefreshToken = (token) => {
-	try {
-		return jwt.verify(
-			token, publicKey,
-			{ algorithms: ['RS256'] });
+
+function verifyAccessToken(token) {
+	if (!token || typeof token !== 'string') {
+		throw new TypeError('[JWT] token phải là string');
 	}
-	catch { return null; }
-};
+	return jwt.verify(token, publicKey, BASE_VERIFY_OPTIONS);
+}
+function verifyRefreshToken(token) {
+	if (!token || typeof token !== 'string') {
+		throw new TypeError('[JWT] token phải là string');
+	}
+	return jwt.verify(token, publicKey, BASE_VERIFY_OPTIONS);
+}
 module.exports = {
 	generateAccessToken,
 	generateRefreshToken,
 	verifyAccessToken,
-	verifyRefreshToken
+	verifyRefreshToken,
+	ACCESS_EXPIRES,
+	REFRESH_EXPIRES,
 };

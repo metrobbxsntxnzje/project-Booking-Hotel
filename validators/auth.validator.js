@@ -6,14 +6,18 @@ const handleValidator = (req, res, next) => {
     if (!error.isEmpty()) {
         return res.status(422).json({
             message: 'Thong tin khong phu hop',
-            errors: error.array().map((e) => ({ onlyFirstError: true })),
+            errors: error.array({ onlyFirstError: true }).map((e) => ({
+                field: e.type === 'field' ? e.path : e.type,
+                message: e.msg,
+                value: e.type === 'field' ? e.value : undefined,
+            })),
         });
     };
     next();
 };
 
 const validateRegister = [
-    body('fullname')
+    body('fullName')
         .trim()
         .notEmpty().withMessage('Họ tên không được trống')
         .isLength({ min: 2, max: 100 }).withMessage('Họ tên từ 2-100 ký tự'),
@@ -31,8 +35,8 @@ const validateRegister = [
         .withMessage('Mật khẩu phải có ít nhất 1 chữ hoa, 1 chữ thường, 1 số'),
 
     body('phone')
-        .optional()
-        .matches(/^(0|\+84)[0-9]{9}$/).withMessage('Số điện thoại không hợp lệ'),
+        .optional(),
+    // .matches(/^(0|\+84)[0-9]{9}$/).withMessage('Số điện thoại không hợp lệ'),
 
     body('gender')
         .optional()
@@ -77,5 +81,5 @@ const changePassword = [
     handleValidator
 ]
 
-module.exports = { handleValidator, validateLogin, validateRegister,changePassword }
+module.exports = { handleValidator, validateLogin, validateRegister, changePassword }
 

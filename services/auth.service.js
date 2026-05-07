@@ -20,7 +20,7 @@ const Register = async ({ fullName, email, password, phone, gender, birthDate })
         status: 'ACTIVE',
         role: 'Customer',
     })
-    const { password: _, ...result } = user.toJson();
+    const { password: _, ...result } = user.toJSON();
     return result
 
 }

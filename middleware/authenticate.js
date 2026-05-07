@@ -66,4 +66,4 @@ const authorizeCustomer = (req, res, next) => {
     next();
 
 }
-module.exports = { authorize, authenticate, authorizeHotelOwner, authorizeStaff };
+module.exports = { authorize, authenticate, authorizeHotelOwner, authorizeStaff,authorizeCustomer };
