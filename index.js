@@ -12,6 +12,8 @@ const cityRoutes = require('./routes/city');
 const wardRoutes = require('./routes/ward.route')
 const bedTypeRoutes = require('./routes/bedtype.route');
 const authRoutes = require('./routes/auth.route')
+const userRoutes = require('./routes/user.route')
+
 const { dateForFilename } = require('./utils/dateFormatter');
 
 
@@ -33,6 +35,8 @@ app.use('/api/wards', wardRoutes);
 app.use('/api/bedtypes', bedTypeRoutes)
 app.use('/api/amenities', require('./routes/amenity.route'))
 app.use('/api/auth', authRoutes)
+app.use('/api/users', userRoutes)
+
 
 
 

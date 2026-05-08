@@ -1,19 +1,21 @@
 'use strict'
-const express = require('express')
-const router = express.Router()
+const express = require('express');
+const router = express.Router();
 
-const controller = require('../controllers/amenity.controller')
-const {
-    validHandle,
-    validCreate,
-    validUpdate,
-    validId
-} = require('../validators/amenity.validator')
+const AuthController = require('../controllers/auth.controller');
+const { authenticate } = require('../middleware/authenticate');
+const { validateRegister, validateLogin } = require('../validators/auth.validator')
+const token = require('../utils/token')
 
-router.get('/', controller.getAll)
-router.get('/:id', validId, validHandle, controller.getById)
-router.post('/', validCreate, validHandle, controller.create)
-router.put('/:id', validUpdate, validHandle, controller.update)
-router.delete('/:id', validId, validHandle, controller.remove)
+//public
+router.post('/register', validateRegister, AuthController.registerController)
+router.post('/login', validateLogin, AuthController.loginController)
+router.post('/refresh-token', token.verifyRefreshToken)
+// router.post('/logout', logout)
 
-module.exports = router
+//private
+router.get('/me', authenticate);
+// router.patch('/change-password',     authenticate, validateChangePassword, changePassword);
+
+module.exports = router;
+

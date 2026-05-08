@@ -58,11 +58,11 @@ const authorizeHotelOwner = (req, res, next) => {
 const authorizeCustomer = (req, res, next) => {
     if (!req.user)
         return res.status(401).json({ message: 'Chưa đăng nhập' });
-    if (req.user.role !== 'Customer')
-        return res.status(403).json({ message: 'Không phải user' })
-    // if (req.user.id !== req.user.id) 
-    //     return res.status(403).json({ message: 'Không được thao tác user khác' })
-
+    if (req.user.id !== parseInt(req.params.id)) {
+        return res.status(403).json({
+            message: 'Không được thao tác tài khoản người khác'
+        });
+    }
     next();
 
 }
