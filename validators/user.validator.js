@@ -45,8 +45,9 @@ const validateCreateUser = [
         .withMessage('Phone number must be between 9 and 20 characters'),
 
     body('status')
-        .notEmpty()
-        .withMessage('Status is required')
+        .optional()
+        // .notEmpty()
+        // .withMessage('Status is required')
         .isIn(['ACTIVE', 'PENDING', 'BLOCKED'])
         .withMessage('Invalid status value'),
 

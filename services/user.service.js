@@ -44,7 +44,7 @@ const getById = async ({ id, reqUser }) => {
     return user;
 };
 
-const create = async ({ fullName, email, password, phone, gender, birthDate, role = 'Customer' }) => {
+const create = async ({ fullName, email, password, phone, gender, birthDate, role = 'Customer', status = 'ACTIVE' }) => {
     const existing = await db.User.findOne({ where: { email } });
     if (existing) throw new AppError('Email này đã tồn tại', 409);
 
@@ -52,7 +52,7 @@ const create = async ({ fullName, email, password, phone, gender, birthDate, rol
     const user = await db.User.create({
         fullName, email, password: hashed,
         phone, gender, birthDate,
-        status: 'ACTIVE', role,
+        status, role,
     });
 
     const { password: _, ...result } = user.toJSON();
