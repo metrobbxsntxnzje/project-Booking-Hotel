@@ -37,6 +37,7 @@ router.post(
     authenticate,
     authorize('Admin'),
     validateCreateUser,
+    validateUserId,
     userController.createController
 );
 router.put(
@@ -44,6 +45,7 @@ router.put(
     authenticate,
     authorize('Admin'),
     validateUpdateUser,
+    validateUserId,
     userController.updateController
 );
 

@@ -1,6 +1,8 @@
 'use strict';
 
 const Service = require('../services/user.service');
+const { serialize } = require('../serializers/user.serializers');
+const serializeUser = (role) => serialize('User', role);
 
 const handleError = (res, err) => {
     return res.status(err.statusCode || 500).json({
