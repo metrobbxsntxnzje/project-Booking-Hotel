@@ -14,11 +14,12 @@ const handleError = (res, err) => {
 const getAllController = async (req, res, next) => {
     try {
 
-        const data = await Service.getAll();
+        const users = await Service.getAll({ reqUser: req.user });
 
         return res.status(200).json({
             success: true,
-            data,
+            data: serializeUser(req.user.role)(users)
+
         });
 
     } catch (err) {
@@ -29,13 +30,33 @@ const getAllController = async (req, res, next) => {
 const getByIdController = async (req, res, next) => {
     try {
 
-        const data = await Service.getById({
+        const user = await Service.getById({
             id: req.params.id,
+            reqUser: req.user
         });
 
         return res.status(200).json({
             success: true,
-            data,
+            data: serializeUser(req.user.role)(user)
+        });
+
+    } catch (err) {
+        return handleError(res, err);
+    }
+};
+
+//get me
+const getMeController = async (req, res, next) => {
+    try {
+
+        const user = await Service.getById({
+            id: req.user.id,
+            reqUser: req.user,
+        });
+
+        return res.status(200).json({
+            success: true,
+            data: serializeUser(req.user.role)(user),
         });
 
     } catch (err) {
@@ -46,14 +67,14 @@ const getByIdController = async (req, res, next) => {
 const createController = async (req, res, next) => {
     try {
 
-        const data = await Service.create({
+        const user = await Service.create({
             ...req.body,
         });
 
         return res.status(201).json({
             success: true,
             message: 'Tạo người dùng thành công',
-            data,
+            data: serializeUser('Admin')(user),
         });
 
     } catch (err) {
@@ -64,7 +85,7 @@ const createController = async (req, res, next) => {
 const updateController = async (req, res, next) => {
     try {
 
-        const data = await Service.update({
+        const user = await Service.update({
             id: req.params.id,
             ...req.body,
         });
@@ -72,7 +93,7 @@ const updateController = async (req, res, next) => {
         return res.status(200).json({
             success: true,
             message: 'Cập nhật người dùng thành công',
-            data,
+            data: serializeUser(req.user.role)(user)
         });
 
     } catch (err) {
@@ -85,6 +106,7 @@ const removeController = async (req, res, next) => {
 
         const data = await Service.remove({
             id: req.params.id,
+            reqUser: req.user
         });
 
         return res.status(200).json({
@@ -97,27 +119,10 @@ const removeController = async (req, res, next) => {
     }
 };
 
-const getMeController = async (req, res, next) => {
-    try {
-
-        const data = await Service.getById({
-            id: req.user.id,
-        });
-
-        return res.status(200).json({
-            success: true,
-            data,
-        });
-
-    } catch (err) {
-        return handleError(res, err);
-    }
-};
-
 const updateMeController = async (req, res, next) => {
     try {
 
-        const data = await Service.update({
+        const user = await Service.update({
             id: req.user.id,
             ...req.body,
         });
@@ -125,7 +130,7 @@ const updateMeController = async (req, res, next) => {
         return res.status(200).json({
             success: true,
             message: 'Cập nhật thông tin cá nhân thành công',
-            data,
+            data: serializeUser(req.user.role)(user),
         });
 
     } catch (err) {

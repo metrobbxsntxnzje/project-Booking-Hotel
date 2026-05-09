@@ -4,57 +4,56 @@ const express = require('express');
 const router = express.Router();
 
 const userController = require('../controllers/user.controller');
-
-const {
-    authenticate,
-    authorize,
-} = require('../middleware/authenticate');
-
+const { authenticate, authorize } = require('../middleware/authenticate');
 const {
     validateCreateUser,
     validateUpdateUser,
     validateUserId,
 } = require('../validators/user.validator');
 
-// user
+// ── Tất cả role đã đăng nhập ───────────────────────────────────
 router.get('/me',
     authenticate,
     userController.getMeController
-)
+);
 router.put('/me',
     authenticate,
     validateUpdateUser,
     userController.updateMeController
-)
-// admin
+);
+
+// ── Admin only ─────────────────────────────────────────────────
 router.get('/',
     authenticate,
     authorize('Admin'),
     userController.getAllController
-)
-router.post(
-    '/',
+);
+router.post('/',
     authenticate,
     authorize('Admin'),
     validateCreateUser,
-    validateUserId,
     userController.createController
 );
-router.put(
-    '/:id',
-    authenticate,
-    authorize('Admin'),
-    validateUpdateUser,
-    validateUserId,
-    userController.updateController
-);
-
-// Xóa user
-router.delete(
-    '/:id',
+router.delete('/:id',
     authenticate,
     authorize('Admin'),
     validateUserId,
     userController.removeController
 );
+
+// ── Admin + Partner + Staff (service tự scope) ─────────────────
+router.get('/:id',
+    authenticate,
+    authorize('Admin', 'Partner', 'Staff'),
+    validateUserId,
+    userController.getByIdController
+);
+router.put('/:id',
+    authenticate,
+    authorize('Admin', 'Partner'),
+    validateUpdateUser,
+    validateUserId,
+    userController.updateController
+);
+
 module.exports = router;
