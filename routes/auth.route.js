@@ -8,7 +8,7 @@ const { validateRegister, validateLogin } = require('../validators/auth.validato
 const token = require('../utils/token')
 
 //public
-router.post('/register', validateRegister, AuthController.registerController)
+router.post('/register', AuthController.registerController)
 router.post('/login', validateLogin, AuthController.loginController)
 router.post('/refresh-token', token.verifyRefreshToken)
 // router.post('/logout', logout)
