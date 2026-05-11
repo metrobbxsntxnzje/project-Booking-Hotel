@@ -10,10 +10,10 @@ module.exports = (sequelize, DataTypes) => {
   }
 
   Partner.init({
-    userId:          { type: DataTypes.INTEGER, primaryKey: true },
-    companyName:     { type: DataTypes.STRING(255), allowNull: false },
-    taxCode:         { type: DataTypes.STRING(100), allowNull: false },
-    businessLicense: { type: DataTypes.TEXT('long'), allowNull: false },
+    userId: { type: DataTypes.INTEGER, primaryKey: true },
+    companyName: { type: DataTypes.STRING(255), allowNull: false },
+    taxCode: { type: DataTypes.STRING(100), allowNull: false },
+    businessLicense: { type: DataTypes.TEXT, allowNull: false },
   }, {
     sequelize,
     modelName: 'Partner',
