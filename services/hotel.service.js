@@ -57,22 +57,21 @@ const getById = async ({ id, reqUser }) => {
 };
 
 
-const create = async ({ reqUser, name, address, city, country, phone, email, description, starRating, status = 'ACTIVE' }) => {
+const create = async ({ reqUser, partnerId, hotelName, address, wardId, cityId, description, starRating, status = 'ACTIVE', }) => {
     if (!['Admin', 'Partner'].includes(reqUser.role)) {
         throw new AppError('Chỉ Admin hoặc Partner mới có thể tạo khách sạn', 403);
     }
 
-    const existing = await db.Hotel.findOne({ where: { email } });
-    if (existing) throw new AppError('Email khách sạn này đã được sử dụng', 409);
+    const finalStatus = reqUser.role === 'Partner' ? 'PENDING_STOP' : status;
+    const partner_id = reqUser.role === 'Partner' ? reqUser.id : partnerId;
+    console.log(partner_id)
 
-    const finalStatus = reqUser.role === 'Partner' ? 'PENDING' : status;
-    const partner_id = reqUser.role === 'Partner' ? reqUser.id : null;
 
     const hotel = await db.Hotel.create({
-        name, address, city, country,
-        phone, email, description,
+        hotelName, address, cityId, wardId,
+        description,
         starRating, status: finalStatus,
-        partner_id,
+        partnerId: partner_id,
     });
 
     return hotel;
