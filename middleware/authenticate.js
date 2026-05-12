@@ -2,19 +2,32 @@
 const { verifyAccessToken } = require('../utils/token');
 
 const authenticate = (req, res, next) => {
-    const authHeader = req.headers['authorization']
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(400).json({ message: ' Không có token xác thực' })
+    try {
+        const authHeader = req.headers['authorization']
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(400).json({ message: ' Không có token xác thực' })
+        }
+
+        const tokenHeader = authHeader.split(' ')[1];
+        const decoded = verifyAccessToken(tokenHeader)
+        if (!decoded) {
+
+            return res.status(401).json({ message: 'Token không hợp lệ hoặc hết hạn' })
+        }
+        req.user = decoded;
+        next();
+    } catch (err) {
+        const jwtErrors = {
+            TokenExpiredError: 'Token đã hết hạn',
+            JsonWebTokenError: 'Token không hợp lệ',
+            NotBeforeError: 'Token chưa được kích hoạt',
+        };
+
+        return res.status(401).json({
+            message: jwtErrors[err.name] || 'Xác thực thất bại'
+        });
     }
 
-    const tokenHeader = authHeader.split(' ')[1];
-    const decoded = verifyAccessToken(tokenHeader)
-    if (!decoded) {
-
-        return res.status(401).json({ message: 'Token không hợp lệ hoặc hết hạn' })
-    }
-    req.user = decoded;
-    next();
 };
 
 const authorize = (...roles) => {
@@ -66,4 +79,4 @@ const authorizeCustomer = (req, res, next) => {
     next();
 
 }
-module.exports = { authorize, authenticate, authorizeHotelOwner, authorizeStaff,authorizeCustomer };
+module.exports = { authorize, authenticate, authorizeHotelOwner, authorizeStaff, authorizeCustomer };

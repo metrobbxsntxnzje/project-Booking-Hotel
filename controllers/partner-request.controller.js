@@ -28,7 +28,11 @@ const registerPartner = async (req, res, next) => {
 const getAllRequests = async (req, res, next) => {
     try {
         const { status } = req.query;
-        const data = await partnerRequestService.getAllRequests({ reqUser: req.user, status });
+        const data = await partnerRequestService.getAllRequests(
+            {
+                reqUser: req.user,
+                status
+            });
         return res.status(200).json({ data });
     } catch (err) {
         handleError(res, err);

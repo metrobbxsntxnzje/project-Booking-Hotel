@@ -1,7 +1,7 @@
 'use strict';
 const express = require('express');
 const router = express.Router();
-const hotelController = require('../controllers/hotelController');
+const hotelController = require('../controllers/hotel.controller');
 const { authenticate, authorize } = require('../middleware/authenticate');
 
 

@@ -38,6 +38,7 @@ app.use('/api/bedtypes', bedTypeRoutes)
 app.use('/api/amenities', require('./routes/amenity.route'))
 app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)
+app.use('/api/hotel', require('./routes/hotel.route'))
 app.use('/api/partner-request', partnerRoutes)
 
 

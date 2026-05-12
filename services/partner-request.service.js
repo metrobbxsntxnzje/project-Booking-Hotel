@@ -40,7 +40,10 @@ const getAllRequests = async ({ reqUser, status }) => {
     }
 
     const where = {};
-    if (status) where.status = status;
+
+    if (status) {
+        where.status = status.trim().toUpperCase();
+    }
 
     return await db.PartnerRequest.findAll({
         where,
@@ -49,11 +52,13 @@ const getAllRequests = async ({ reqUser, status }) => {
             {
                 model: db.User,
                 as: 'requester',
+                required: false,
                 attributes: ['id', 'fullName', 'email', 'phone'],
             },
             {
                 model: db.User,
                 as: 'reviewer',
+                required: false,
                 attributes: ['id', 'fullName', 'email'],
             },
         ],
