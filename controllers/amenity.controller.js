@@ -1,5 +1,5 @@
 'use strict'
-const Service = require('../services/amenity.service')
+const Service = require('../services/share/lookup/amenity.service')
 
 const handleError = (res, err) => {
     return res.status(err.statusCode || 500).json({

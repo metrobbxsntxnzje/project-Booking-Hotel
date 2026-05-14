@@ -1,14 +1,13 @@
 'use strict'
 const bcrypt = require('bcrypt');
-const db = require('../models');
-const AppError = require('../utils/appError')
-const { generateAccessToken, generateRefreshToken } = require('../utils/token');
+const db = require('../../../models');
+const AppError = require('../../../utils/appError')
+const { generateAccessToken, generateRefreshToken } = require('../../../utils/token');
 const SALT_ROUNDS = 10;
 
 const Register = async ({ fullName, email, password, phone, gender, birthDate }) => {
     const existing = await db.User.findOne({ where: { email } });
     if (existing) {
-
         throw new AppError('Email đã tồn tại', 409);
     }
     const hashed = await bcrypt.hash(password, SALT_ROUNDS);
@@ -22,7 +21,6 @@ const Register = async ({ fullName, email, password, phone, gender, birthDate })
     })
     const { password: _, ...result } = user.toJSON();
     return result
-
 }
 
 const Login = async ({ email, password }) => {

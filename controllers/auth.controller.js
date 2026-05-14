@@ -1,5 +1,5 @@
 'use strict';
-const AuthService = require('../services/auth.service');
+const AuthService = require('../services/share/auth/auth.service');
 
 const handleError = (res, error) => {
 

@@ -1,5 +1,5 @@
 'use strict'
-const Service = require('../services/share/lookup/city.service')
+const Service = require('../../services/admin/share/city-manager.service')
 const handleError = (res, error) => {
 
     const status = error.statusCode || 500;

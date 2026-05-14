@@ -21,6 +21,8 @@ const validNameCity = [
         .trim()
         .notEmpty().withMessage('Tên không được trống')
         .isLength({ min: 2 }).withMessage('Ít nhất 2 ký tự')
-        .matches(/^[\p{L}\s]+$/u).withMessage('Chỉ chứa chữ cái và khoảng trắng')
+        .matches(/^[\p{L}\s]+$/u).withMessage('Chỉ chứa chữ cái và khoảng trắng'),
+
+    validHandle
 ]
 module.exports = { validHandle, validNameCity }

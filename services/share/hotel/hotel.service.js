@@ -1,6 +1,6 @@
 'use strict';
-const db = require('../models');
-const AppError = require('../utils/appError');
+const db = require('../../../models');
+const AppError = require('../../../utils/appError');
 const { Op } = require('sequelize');
 
 const getScope = (reqUser) => {
@@ -22,12 +22,19 @@ const getAll = async ({ reqUser, filters = {} }) => {
     const scope = getScope(reqUser);
     if (scope === null) throw new AppError('Bạn không có quyền truy cập', 403);
 
+    /** @type {Record<string, any>} */
     const where = { ...scope };
 
-    // // Cho phép filter thêm theo tên, thành phố
-    // if (filters.name) where.name = { [Op.like]: `%${filters.name}%` };
-    // if (filters.city) where.city = { [Op.like]: `%${filters.city}%` };
-    // if (filters.status && reqUser.role === 'Admin') where.status = filters.status;
+    /** @type {Record<string, any>} */
+    const typedFilters = filters;
+
+    if (typedFilters.hotelName) {
+        where["hotelName"] = {
+            [Op.iLike]: `%${typedFilters.hotelName}%`
+        };
+    }
+    if (typedFilters.cityId) where["cities"] = { [Op.like]: `%${typedFilters.cityId}%` };
+    if (typedFilters.status && reqUser.role === "Admin") where["status"] = typedFilters.status;
 
     return await db.Hotel.findAll({
         where,
@@ -65,7 +72,6 @@ const create = async ({ reqUser, partnerId, hotelName, address, wardId, cityId, 
     const finalStatus = reqUser.role === 'Partner' ? 'PENDING_STOP' : status;
     const partner_id = reqUser.role === 'Partner' ? reqUser.id : partnerId;
     console.log(partner_id)
-
 
     const hotel = await db.Hotel.create({
         hotelName, address, cityId, wardId,

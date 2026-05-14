@@ -1,3 +1,4 @@
+require('module-alias/register');
 require('dotenv').config();
 
 const express = require('express');
@@ -8,7 +9,7 @@ const cors = require('cors');
 const helmet = require('helmet').default;
 const logger = require('./utils/logger')(module)
 
-const cityRoutes = require('./routes/city');
+const cityRoutes = require('./routes/city.route');
 const wardRoutes = require('./routes/ward.route')
 const bedTypeRoutes = require('./routes/bedtype.route');
 const authRoutes = require('./routes/auth.route')
@@ -32,6 +33,7 @@ app.use(cors({
 app.use(helmet());
 
 // routes
+app.use('/api/admin/cities', cityRoutes);
 app.use('/api/cities', cityRoutes);
 app.use('/api/wards', wardRoutes);
 app.use('/api/bedtypes', bedTypeRoutes)

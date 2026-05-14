@@ -13,12 +13,18 @@ module.exports = (sequelize, DataTypes) => {
   City.init({
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING(255), allowNull: false },
+    statys: {
+      type: DataTypes.ENUM('ACTIVE', 'INACTIVE'),
+      allowNull: false,
+      defaultValue: 'ACTIVE',
+
+    },
     deletedAt: { type: DataTypes.DATE },
   }, {
     sequelize,
     modelName: 'City',
     tableName: 'cities',
-    timestamps: false,
+    timestamps: true,
     paranoid: true,
   });
 

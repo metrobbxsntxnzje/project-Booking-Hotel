@@ -1,5 +1,5 @@
 'use strict';
-const hotelService = require('../services/hotel.service');
+const hotelService = require('../services/share/hotel/hotel.service');
 const handleError = (res, error) => {
 
     const status = error.statusCode || 500;

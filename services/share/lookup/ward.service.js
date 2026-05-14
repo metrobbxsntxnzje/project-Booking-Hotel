@@ -1,6 +1,6 @@
 'use strict'
-const db = require('../models')
-const AppError = require('../utils/appError')
+const db = require('../../../models')
+const AppError = require('../../../utils/appError')
 
 // CREATE
 const create = async ({ name, cityId }) => {

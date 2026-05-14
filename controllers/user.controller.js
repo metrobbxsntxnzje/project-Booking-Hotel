@@ -1,6 +1,6 @@
 'use strict';
 
-const Service = require('../services/user.service');
+const Service = require('../services/share/user/user.service');
 const { serialize } = require('../serializers/user.serializers');
 const serializeUser = (role) => serialize('User', role);
 

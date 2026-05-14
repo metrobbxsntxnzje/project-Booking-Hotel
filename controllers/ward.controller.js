@@ -1,5 +1,5 @@
 'use strict'
-const Service = require('../services/ward.service')
+const Service = require('../services/share/lookup/ward.service')
 
 const handleError = (res, error) => {
     return res.status(error.statusCode || 500).json({

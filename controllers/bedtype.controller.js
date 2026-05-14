@@ -1,5 +1,5 @@
 'use strict'
-const Service = require('../services/bedtype.service')
+const Service = require('../services/share/lookup/bedtype.service')
 
 const handleError = (res, err) => {
     return res.status(err.statusCode || 500).json({

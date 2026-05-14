@@ -1,5 +1,7 @@
 'use strict';
 const partnerRequestService = require('../services/partner-request.service');
+const admintService = require('../services/admin/partner-manager/partner-request.service');
+
 const handleError = (res, err) => {
     return res.status(err.statusCode || 500).json({
         success: false,
@@ -28,7 +30,7 @@ const registerPartner = async (req, res, next) => {
 const getAllRequests = async (req, res, next) => {
     try {
         const { status } = req.query;
-        const data = await partnerRequestService.getAllRequests(
+        const data = await admintService.getAllRequests(
             {
                 reqUser: req.user,
                 status
@@ -54,7 +56,7 @@ const reviewRequest = async (req, res, next) => {
     try {
         const { id } = req.params;
         const { status, adminNote } = req.body;
-        const result = await partnerRequestService.reviewRequest({
+        const result = await admintService.reviewRequest({
             id: parseInt(id),
             reqUser: req.user,
             status,

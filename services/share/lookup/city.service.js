@@ -1,8 +1,11 @@
 'use strict'
-const db = require('../models');
-const AppError = require('../utils/appError')
+const db = require('../../../models');
+const AppError = require('../../../utils/appError')
 const getAll = async () => {
     return await db.City.findAll({
+        where: {
+            status: 'Active'
+        },
         order: [['id', 'DESC']]
     })
 }
