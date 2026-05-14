@@ -1,5 +1,5 @@
 'use strict'
-const Service = require('../services/share/lookup/ward.service')
+const Service = require('../../services/share/lookup/ward.service')
 
 const handleError = (res, error) => {
     return res.status(error.statusCode || 500).json({
@@ -8,7 +8,7 @@ const handleError = (res, error) => {
 }
 
 // CREATE
-const create = async (req, res) => {
+const createController = async (req, res) => {
     try {
         const ward = await Service.create(req.body)
 
@@ -22,7 +22,7 @@ const create = async (req, res) => {
 }
 
 // GET ALL
-const getAll = async (req, res) => {
+const getAllController = async (req, res) => {
     try {
         const wards = await Service.getAll()
 
@@ -33,7 +33,7 @@ const getAll = async (req, res) => {
 }
 
 // GET BY ID
-const getById = async (req, res) => {
+const getByIdController = async (req, res) => {
     try {
         const ward = await Service.getById(req.params.id)
 
@@ -44,7 +44,7 @@ const getById = async (req, res) => {
 }
 
 // UPDATE
-const update = async (req, res) => {
+const updateController = async (req, res) => {
     try {
         const ward = await Service.update({
             id: req.params.id,
@@ -61,7 +61,7 @@ const update = async (req, res) => {
 }
 
 // DELETE
-const remove = async (req, res) => {
+const removeController = async (req, res) => {
     try {
         await Service.remove(req.params.id)
 
@@ -74,9 +74,9 @@ const remove = async (req, res) => {
 }
 
 module.exports = {
-    create,
-    getAll,
-    getById,
-    update,
-    remove
+    createController,
+    getAllController,
+    getByIdController,
+    updateController,
+    removeController
 }

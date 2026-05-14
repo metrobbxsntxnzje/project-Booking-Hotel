@@ -11,9 +11,15 @@ module.exports = (sequelize, DataTypes) => {
   }
 
   Ward.init({
-    id:     { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     cityId: { type: DataTypes.INTEGER, allowNull: false },
-    name:   { type: DataTypes.STRING(255), allowNull: false },
+    name: { type: DataTypes.STRING(255), allowNull: false },
+    status: {
+      type: DataTypes.ENUM('ACTIVE', 'INACTIVE'),
+      allowNull: false,
+      defaultValue: 'ACTIVE',
+
+    },
   }, {
     sequelize,
     modelName: 'Ward',

@@ -9,8 +9,12 @@ const cors = require('cors');
 const helmet = require('helmet').default;
 const logger = require('./utils/logger')(module)
 
-const cityRoutes = require('./routes/city.route');
-const wardRoutes = require('./routes/ward.route')
+const cityRoutesAdmin = require('./routes/admin/city.route');
+const wardRoutesAdmin = require('./routes/admin/ward.route');
+
+
+const cityRoutes = require('./routes/share/city.route');
+const wardRoutes = require('./routes/share/ward.route')
 const bedTypeRoutes = require('./routes/bedtype.route');
 const authRoutes = require('./routes/auth.route')
 const userRoutes = require('./routes/user.route')
@@ -32,14 +36,19 @@ app.use(cors({
 
 app.use(helmet());
 
-// routes
-app.use('/api/admin/cities', cityRoutes);
+// routes admin
+app.use('/api/admin/cities', cityRoutesAdmin);
+app.use('/api/admin/ward', wardRoutesAdmin);
+
+//route share
 app.use('/api/cities', cityRoutes);
 app.use('/api/wards', wardRoutes);
 app.use('/api/bedtypes', bedTypeRoutes)
-app.use('/api/amenities', require('./routes/amenity.route'))
-app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)
+app.use('/api/amenities', require('./routes/amenity.route'))
+//route auth
+app.use('/api/auth', authRoutes)
+
 app.use('/api/hotel', require('./routes/hotel.route'))
 app.use('/api/partner-request', partnerRoutes)
 

@@ -24,20 +24,20 @@ router.get(
 );
 
 // Admin xem toàn bộ danh sách (có thể filter ?status=PENDING)
-router.get(
-    '/',
-    authenticate,
-    authorize('Admin'),
-    partnerRequestController.getAllRequests
-);
+// router.get(
+//     '/',
+//     authenticate,
+//     authorize('Admin'),
+//     partnerRequestController.getAllRequests
+// );
 
 // Admin duyệt hoặc từ chối
-router.patch(
-    '/:id/review',
-    authenticate,
-    authorize('Admin'),
-    validateReviewRequest,
-    partnerRequestController.reviewRequest
-);
+// router.patch(
+//     '/:id/review',
+//     authenticate,
+//     authorize('Admin'),
+//     validateReviewRequest,
+//     partnerRequestController.reviewRequest
+// );
 
 module.exports = router;
