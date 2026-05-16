@@ -18,11 +18,7 @@ const handleValidator = (req, res, next) => {
 };
 
 const validateCreateHotel = [
-    body('partnerId')
-        .notEmpty()
-        .withMessage('id partner không để trống')
-        .isInt({ min: 1 })
-        .withMessage('Partner ID must be a positive integer'),
+
 
     body('hotelName')
         .trim()
@@ -86,10 +82,7 @@ const validateCreateHotel = [
 ];
 
 const validateUpdateHotel = [
-    body('partnerId')
-        .optional()
-        .isInt({ min: 1 })
-        .withMessage('Partner ID must be a positive integer'),
+
 
     body('hotelName')
         .optional()

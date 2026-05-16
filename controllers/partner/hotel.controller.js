@@ -1,91 +1,141 @@
 'use strict';
+
 const hotelService = require('../../services/partner/hotel-manager.service');
+
 const handleError = (res, error) => {
-
     const status = error.statusCode || 500;
-    return res.status(status).json({ message: error.message || 'lỗi hệ thống' })
 
-}
-const getAllController = async (req, res, next) => {
+    return res.status(status).json({
+        message: error.message || 'lỗi hệ thống'
+    });
+};
+
+const getAll = async (req, res) => {
     try {
         const hotels = await hotelService.getAll({
             reqUser: req.user,
-            filters: req.query,   // name, city, status
+            filters: req.query
         });
-        res.json({
+
+        return res.json({
             success: true,
             data: hotels
         });
-    } catch (err) {
-        return handleError(res, err);
+    } catch (error) {
+        return handleError(res, error);
     }
 };
 
-const getByIdController = async (req, res, next) => {
+const getById = async (req, res) => {
     try {
         const hotel = await hotelService.getById({
             id: req.params.id,
-            reqUser: req.user,
+            reqUser: req.user
         });
-        res.json({ success: true, data: hotel });
-    } catch (err) {
-        return handleError(res, err);
+
+        return res.json({
+            success: true,
+            data: hotel
+        });
+    } catch (error) {
+        return handleError(res, error);
     }
 };
 
-const createController = async (req, res, next) => {
+const create = async (req, res) => {
     try {
         const hotel = await hotelService.create({
-            reqUser: req.user,
             ...req.body,
+            reqUser: req.user
         });
-        res.status(201).json({ success: true, data: hotel });
-    } catch (err) {
-        return handleError(res, err);
+
+        return res.json({
+            success: true,
+            data: hotel
+        });
+    } catch (error) {
+        return handleError(res, error);
     }
 };
 
-const updateController = async (req, res, next) => {
+const update = async (req, res) => {
     try {
         const hotel = await hotelService.update({
             id: req.params.id,
-            reqUser: req.user,
             ...req.body,
+            reqUser: req.user
         });
-        res.json({ success: true, data: hotel });
-    } catch (err) {
-        return handleError(res, err);
+
+        return res.json({
+            success: true,
+            data: hotel
+        });
+    } catch (error) {
+        return handleError(res, error);
     }
 };
 
-
-
-const assignStaffController = async (req, res, next) => {
-    try {
-        const result = await hotelService.assignStaff({
-            hotelId: req.params.id,
-            staffId: req.body.staffId,
-            reqUser: req.user,
-        });
-        res.json({ success: true, ...result });
-    } catch (err) {
-        return handleError(res, err);
-    }
-};
-
-const removeController = async (req, res, next) => {
+const remove = async (req, res) => {
     try {
         const result = await hotelService.remove({
             id: req.params.id,
-            reqUser: req.user,
+            reqUser: req.user
         });
-        res.json({ success: true, ...result });
-    } catch (err) {
-        return handleError(res, err);
+
+        return res.json({
+            success: true,
+            ...result
+        });
+    } catch (error) {
+        return handleError(res, error);
+    }
+};
+
+const uploadImages = async (req, res) => {
+    try {
+        const result = await hotelService.uploadImages({
+            hotelId: req.params.id,
+            reqUser: req.user,
+            images: req.body.images
+        });
+
+        return res.json({
+            success: true,
+            data: result
+        });
+    } catch (error) {
+        return handleError(res, error);
+    }
+};
+
+const removeImage = async (req, res) => {
+    try {
+        const result = await hotelService.removeImage({
+            hotelId: req.params.id,
+            imageId: req.params.imageId,
+            reqUser: req.user
+        });
+
+        return res.json({
+            success: true,
+            data: result
+        });
+    } catch (error) {
+        return handleError(res, error);
     }
 };
 
 module.exports = {
-    getAllController, getByIdController, createController,
-    updateController, assignStaffController, removeController
+    getAll,
+    getById,
+    create,
+    update,
+    remove,
+    uploadImages,
+    removeImage,
+    getAllController: getAll,
+    getByIdController: getById,
+    createController: create,
+    updateController: update,
+    removeController: remove
 };
