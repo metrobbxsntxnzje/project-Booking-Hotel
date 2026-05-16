@@ -3,15 +3,15 @@ const express = require('express')
 const router = express.Router()
 
 const controller = require('../../controllers/partner/hotel.controller')
-
 const {
-    validateCreateHotel
+    validateCreateHotel,
+    validateUpdateHotel
 } = require('../../validators/hotel.validator')
 
 router.get('/', controller.getAllController)
-router.get('/:id', validateCreateHotel, controller.getByIdController)
+router.get('/:id', controller.getByIdController)
 router.post('/', validateCreateHotel, controller.createController)
-router.put('/:id', validateCreateHotel, controller.updateController)
-router.delete('/:id', validateCreateHotel, controller.removeController)
+router.put('/:id', validateUpdateHotel, controller.updateController)
+router.delete('/:id', controller.removeController)
 
 module.exports = router

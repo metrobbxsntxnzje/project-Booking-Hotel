@@ -1,5 +1,5 @@
 'use strict';
-const hotelService = require('../../services/share/hotel/hotel.service');
+const hotelService = require('../../services/partner/hotel-manager.service');
 const handleError = (res, error) => {
 
     const status = error.statusCode || 500;
@@ -58,18 +58,7 @@ const updateController = async (req, res, next) => {
     }
 };
 
-const approveController = async (req, res, next) => {
-    try {
-        const result = await hotelService.approve({
-            id: req.params.id,
-            reqUser: req.user,
-            status: req.body.status,  // 'ACTIVE' | 'REJECTED'
-        });
-        res.json({ success: true, ...result });
-    } catch (err) {
-        return handleError(res, err);
-    }
-};
+
 
 const assignStaffController = async (req, res, next) => {
     try {
@@ -98,5 +87,5 @@ const removeController = async (req, res, next) => {
 
 module.exports = {
     getAllController, getByIdController, createController,
-    updateController, approveController, assignStaffController, removeController
+    updateController, assignStaffController, removeController
 };

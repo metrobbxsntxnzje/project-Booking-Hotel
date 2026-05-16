@@ -52,6 +52,9 @@ app.use('/api/auth', authRoutes)
 app.use('/api/hotel', require('./routes/hotel.route'))
 app.use('/api/partner-request', partnerRoutes)
 
+//route partner
+app.use('/api/parner/hotel', require('./routes/partner/hotel.route'))
+app.use('/api/parner/staff', require('./routes/partner/staff.route'))
 
 
 

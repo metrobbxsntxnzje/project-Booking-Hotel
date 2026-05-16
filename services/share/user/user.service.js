@@ -5,7 +5,6 @@ const AppError = require('../../../utils/appError');
 const { Op } = require('sequelize');
 const SALT_ROUNDS = 10;
 
-// Bỏ async — không có gì cần await bên trong
 const getScope = (reqUser) => {
     switch (reqUser.role) {
         case 'Admin':
