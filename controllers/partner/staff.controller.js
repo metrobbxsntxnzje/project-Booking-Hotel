@@ -1,85 +1,97 @@
 'use strict';
-const hotelService = require('../../services/share/hotel/hotel.service');
+const staffService = require('../../services/partner/staff-manager.service');
 const handleError = (res, error) => {
 
     const status = error.statusCode || 500;
     return res.status(status).json({ message: error.message || 'lỗi hệ thống' })
 
 }
-const getAllController = async (req, res, next) => {
+const getAllController = async (req, res,) => {
     try {
-        const hotels = await hotelService.getAll({
+        const staff = await staffService.getAll({
             reqUser: req.user,
-            filters: req.query,   // name, city, status
+            filters: {
+                ...req.query,
+                hotelId: req.params.hotelId
+            } // name, city, status
         });
         res.json({
             success: true,
-            data: hotels
+            data: staff
         });
     } catch (err) {
         return handleError(res, err);
     }
 };
 
-const getByIdController = async (req, res, next) => {
+const getByIdController = async (req, res) => {
     try {
-        const hotel = await hotelService.getById({
+        const staff = await staffService.getById({
             id: req.params.id,
+            hotelId: req.params.hotelId,
             reqUser: req.user,
         });
-        res.json({ success: true, data: hotel });
+
+        res.json({
+            success: true,
+            data: staff,
+        });
     } catch (err) {
         return handleError(res, err);
     }
 };
 
-const createController = async (req, res, next) => {
+const createController = async (req, res) => {
     try {
-        const hotel = await hotelService.create({
+        const staff = await staffService.create({
             reqUser: req.user,
+            hotelId: req.params.hotelId,
             ...req.body,
         });
-        res.status(201).json({ success: true, data: hotel });
+
+        res.status(201).json({
+            success: true,
+            data: staff,
+        });
     } catch (err) {
         return handleError(res, err);
     }
 };
 
-const updateController = async (req, res, next) => {
+const updateController = async (req, res) => {
     try {
-        const hotel = await hotelService.update({
+        const staff = await staffService.update({
             id: req.params.id,
             reqUser: req.user,
+            hotelId: req.params.hotelId,
             ...req.body,
         });
-        res.json({ success: true, data: hotel });
-    } catch (err) {
-        return handleError(res, err);
-    }
-};
 
-
-
-const assignStaffController = async (req, res, next) => {
-    try {
-        const result = await hotelService.assignStaff({
-            hotelId: req.params.id,
-            staffId: req.body.staffId,
-            reqUser: req.user,
+        res.json({
+            success: true,
+            data: staff,
         });
-        res.json({ success: true, ...result });
     } catch (err) {
         return handleError(res, err);
     }
 };
 
-const removeController = async (req, res, next) => {
+
+
+
+
+const removeController = async (req, res) => {
     try {
-        const result = await hotelService.remove({
+        const result = await staffService.remove({
             id: req.params.id,
+            hotelId: req.params.hotelId,
             reqUser: req.user,
         });
-        res.json({ success: true, ...result });
+
+        res.json({
+            success: true,
+            ...result,
+        });
     } catch (err) {
         return handleError(res, err);
     }
@@ -87,5 +99,5 @@ const removeController = async (req, res, next) => {
 
 module.exports = {
     getAllController, getByIdController, createController,
-    updateController, assignStaffController, removeController
+    updateController, removeController
 };

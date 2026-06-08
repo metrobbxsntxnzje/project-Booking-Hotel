@@ -28,14 +28,19 @@ const ROOM_CONFIG_INCLUDE = [
     }
 ];
 
-const verifyOwnership = async (configId, partnerId, options = {}) => {
+const verifyOwnership = async (configId, partnerId, hotelId, options = {}) => {
+    const hotelWhere = { partnerId };
+    if (hotelId !== undefined) {
+        hotelWhere.id = hotelId;
+    }
+
     const config = await db.RoomConfiguration.findOne({
         where: { id: configId },
         include: [
             {
                 model: db.Hotel,
                 as: 'hotel',
-                where: { partnerId },
+                where: hotelWhere,
                 attributes: ['id', 'partnerId']
             }
         ],
@@ -61,7 +66,12 @@ const verifyHotelOwnership = async (hotelId, partnerId) => {
     return hotel;
 };
 
-const verifyPhysicalRoomOwnership = async (id, partnerId) => {
+const verifyPhysicalRoomOwnership = async (id, partnerId, hotelId, options = {}) => {
+    const hotelWhere = { partnerId };
+    if (hotelId !== undefined) {
+        hotelWhere.id = hotelId;
+    }
+
     const room = await db.PhysicalRoom.findOne({
         where: { id },
         include: [
@@ -72,12 +82,13 @@ const verifyPhysicalRoomOwnership = async (id, partnerId) => {
                     {
                         model: db.Hotel,
                         as: 'hotel',
-                        where: { partnerId },
+                        where: hotelWhere,
                         attributes: ['id', 'partnerId']
                     }
                 ]
             }
-        ]
+        ],
+        ...options
     });
 
     if (!room) {
@@ -98,8 +109,8 @@ const getAllConfigs = async ({ hotelId, reqUser }) => {
     });
 };
 
-const getConfigById = async ({ id, reqUser }) => {
-    const config = await verifyOwnership(id, reqUser.id);
+const getConfigById = async ({ id, hotelId, reqUser }) => {
+    const config = await verifyOwnership(id, reqUser.id, hotelId);
 
     return await config.reload({
         include: [
@@ -161,11 +172,12 @@ const createConfig = async ({
         return createdConfig;
     });
 
-    return await getConfigById({ id: config.id, reqUser });
+    return await getConfigById({ id: config.id, hotelId, reqUser });
 };
 
 const updateConfig = async ({
     id,
+    hotelId,
     roomTypeId,
     basePrice,
     area,
@@ -174,16 +186,16 @@ const updateConfig = async ({
     bedTypes,
     reqUser
 }) => {
-    await verifyOwnership(id, reqUser.id);
+    await verifyOwnership(id, reqUser.id, hotelId);
 
     await db.sequelize.transaction(async (transaction) => {
-        const config = await verifyOwnership(id, reqUser.id, { transaction });
+        const config = await verifyOwnership(id, reqUser.id, hotelId, { transaction });
 
         const updatePayload = {};
-        if (roomTypeId !== undefined) updatePayload.roomTypeId = roomTypeId;
-        if (basePrice !== undefined) updatePayload.basePrice = basePrice;
-        if (area !== undefined) updatePayload.area = area;
-        if (maxPeople !== undefined) updatePayload.maxPeople = maxPeople;
+        if (roomTypeId !== undefined) { updatePayload.roomTypeId = roomTypeId; }
+        if (basePrice !== undefined) { updatePayload.basePrice = basePrice; }
+        if (area !== undefined) { updatePayload.area = area; }
+        if (maxPeople !== undefined) { updatePayload.maxPeople = maxPeople; }
 
         if (Object.keys(updatePayload).length > 0) {
             await config.update(updatePayload, { transaction });
@@ -225,19 +237,19 @@ const updateConfig = async ({
         }
     });
 
-    return await getConfigById({ id, reqUser });
+    return await getConfigById({ id, hotelId, reqUser });
 };
 
-const removeConfig = async ({ id, reqUser }) => {
-    const config = await verifyOwnership(id, reqUser.id);
+const removeConfig = async ({ id, hotelId, reqUser }) => {
+    const config = await verifyOwnership(id, reqUser.id, hotelId);
 
     await config.update({ deleted_at: new Date() });
 
     return { message: 'Xóa cấu hình phòng thành công' };
 };
 
-const uploadImages = async ({ configId, images = [], reqUser }) => {
-    await verifyOwnership(configId, reqUser.id);
+const uploadImages = async ({ hotelId, configId, images = [], reqUser }) => {
+    await verifyOwnership(configId, reqUser.id, hotelId);
 
     if (!Array.isArray(images) || images.length === 0) {
         throw new AppError('Danh sách ảnh không hợp lệ', 400);
@@ -273,8 +285,8 @@ const uploadImages = async ({ configId, images = [], reqUser }) => {
     });
 };
 
-const removeImage = async ({ configId, imageId, reqUser }) => {
-    await verifyOwnership(configId, reqUser.id);
+const removeImage = async ({ hotelId, configId, imageId, reqUser }) => {
+    await verifyOwnership(configId, reqUser.id, hotelId);
 
     return await db.sequelize.transaction(async (transaction) => {
         const image = await db.RoomImage.findOne({
@@ -305,8 +317,8 @@ const removeImage = async ({ configId, imageId, reqUser }) => {
     });
 };
 
-const setPrimaryImage = async ({ configId, imageId, reqUser }) => {
-    await verifyOwnership(configId, reqUser.id);
+const setPrimaryImage = async ({ hotelId, configId, imageId, reqUser }) => {
+    await verifyOwnership(configId, reqUser.id, hotelId);
 
     return await db.sequelize.transaction(async (transaction) => {
         const image = await db.RoomImage.findOne({
@@ -332,16 +344,15 @@ const setPrimaryImage = async ({ configId, imageId, reqUser }) => {
     });
 };
 
-const getAllPhysicalRooms = async ({ configId, reqUser }) => {
-    await verifyOwnership(configId, reqUser.id);
-
+const getAllPhysicalRooms = async ({ configId, reqUser, hotelId }) => {
+    await verifyOwnership(configId, reqUser.id, hotelId);
     return await db.PhysicalRoom.findAll({
         where: { roomConfigId: configId }
     });
 };
 
-const createPhysicalRoom = async ({ configId, roomNumber, floor, status = 'available', reqUser }) => {
-    await verifyOwnership(configId, reqUser.id);
+const createPhysicalRoom = async ({ configId, roomNumber, floor, status = 'available', reqUser, hotelId }) => {
+    await verifyOwnership(configId, reqUser.id, hotelId);
 
     return await db.PhysicalRoom.create({
         roomConfigId: configId,
@@ -351,24 +362,26 @@ const createPhysicalRoom = async ({ configId, roomNumber, floor, status = 'avail
     });
 };
 
-const updatePhysicalRoom = async ({ id, roomNumber, floor, status, reqUser }) => {
-    const room = await verifyPhysicalRoomOwnership(id, reqUser.id);
+const updatePhysicalRoom = async ({ id, hotelId, roomNumber, floor, status, reqUser }) => {
+    const room = await verifyPhysicalRoomOwnership(id, reqUser.id, hotelId);
 
     const updatePayload = {};
-    if (roomNumber !== undefined) updatePayload.roomNumber = roomNumber;
-    if (floor !== undefined) updatePayload.floor = floor;
-    if (status !== undefined) updatePayload.status = status;
+    if (roomNumber !== undefined) { updatePayload.roomNumber = roomNumber; }
+    if (floor !== undefined) { updatePayload.floor = floor; }
+    if (status !== undefined) { updatePayload.status = status; }
 
     return await room.update(updatePayload);
 };
 
-const removePhysicalRoom = async ({ id, reqUser }) => {
-    const room = await verifyPhysicalRoomOwnership(id, reqUser.id);
+const removePhysicalRoom = async ({ id, hotelId, reqUser }) => {
+    const room = await verifyPhysicalRoomOwnership(id, reqUser.id, hotelId);
 
     await room.update({ deleted_at: new Date() });
 
     return { message: 'Xóa phòng thành công' };
 };
+
+
 
 module.exports = {
     verifyOwnership,

@@ -41,5 +41,16 @@ const loginController = async (req, res) => {
         return handleError(res, error)
     }
 }
+const meController = async (req, res) => {
+    try {
+        const user = await AuthService.Me(req.user);
+        return res.status(200).json({
+            success: true,
+            user,
+        });
+    } catch (error) {
+        return handleError(res, error);
+    }
+};
 
-module.exports = { loginController, registerController }
+module.exports = { loginController, registerController,meController, }

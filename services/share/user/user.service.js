@@ -23,8 +23,9 @@ const getScope = (reqUser) => {
 
 const getAll = async ({ reqUser }) => {
     const scope = getScope(reqUser);
-    if (scope === null) throw new AppError('Bạn không có quyền', 403);
-
+    if (scope === null) {
+        throw new AppError('Bạn không có quyền', 403);
+    }
     return await db.User.findAll({
         where: scope,
         order: [['id', 'DESC']],
@@ -33,8 +34,9 @@ const getAll = async ({ reqUser }) => {
 
 const getById = async ({ id, reqUser }) => {
     const scope = getScope(reqUser);
+    const isSelf = Number(id) === Number(reqUser.id);
 
-    const where = scope === null
+    const where = scope === null || isSelf
         ? { id: reqUser.id }
         : { id, ...scope };
 
@@ -62,7 +64,8 @@ const PROTECTED_FIELDS = ['role', 'status', 'hotel_id', 'password'];
 
 const update = async ({ id, reqUser, ...fields }) => {
     const scope = getScope(reqUser);
-    const where = scope === null
+    const isSelf = Number(id) === Number(reqUser.id);
+    const where = scope === null || isSelf
         ? { id: reqUser.id }  // Customer chỉ update chính mình
         : { id, ...scope };
 

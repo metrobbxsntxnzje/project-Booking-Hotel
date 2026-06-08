@@ -3,11 +3,9 @@
   "version": "1.0.0",
   "description": "Backend base for the booking hotel project built with Express and Sequelize.",
   "main": "index.js",
-  
   "_moduleAliases": {
     "@": "src"
   },
-
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon --exitcrash index.js",
     "staging_prep": "npm i && cross-env NODE_ENV=staging npx sequelize-cli db:migrate",
@@ -37,8 +35,10 @@
     "winston": "^3.8.2"
   },
   "devDependencies": {
+    "@typescript-eslint/parser": "^8.59.3",
     "cross-env": "^7.0.3",
     "nodemon": "^2.0.20",
-    "sequelize-cli": "^6.5.1"
+    "sequelize-cli": "^6.5.1",
+    "typescript": "^6.0.3"
   }
 }

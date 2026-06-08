@@ -55,5 +55,17 @@ const Login = async ({ email, password }) => {
     const { password: _, ...userWithoutPassword } = user.toJSON();
     return { accessToken, refreshToken, user: userWithoutPassword };
 }
+const Me = async (reqUser) => {
+    const user = await db.User.scope('withDeleted').findByPk(reqUser.id, {
+        attributes: { exclude: ['password'] },
+    });
 
-module.exports = { Register, Login }
+    if (!user) {
+        throw new AppError('Người dùng không tồn tại', 404);
+    }
+
+    return user;
+};
+
+module.exports = { Register, Login, Me };
+

@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(cors({
-	origin: process.env.CLIENT_URL || 'http://localhost:3000',
+	origin: process.env.CLIENT_URL || 'http://localhost:5000',
 	credentials: true,
 }));
 
@@ -53,8 +53,8 @@ app.use('/api/hotel', require('./routes/hotel.route'))
 app.use('/api/partner-request', partnerRoutes)
 
 //route partner
-app.use('/api/parner/hotel', require('./routes/partner/hotel.route'))
-app.use('/api/parner/staff', require('./routes/partner/staff.route'))
+app.use('/api/partner', require('./routes/partner'))
+
 
 
 

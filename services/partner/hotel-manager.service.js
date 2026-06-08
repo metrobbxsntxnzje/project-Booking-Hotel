@@ -11,6 +11,19 @@ const partnerScope = (reqUser) => {
     return ({ partnerId: reqUser.id })
 }
 
+const PARTNER_INCLUDE = {
+    model: db.Partner,
+    as: 'partner',
+    attributes: ['userId', 'companyName', 'taxCode', 'businessLicense'],
+    include: [
+        {
+            model: db.User,
+            as: 'user',
+            attributes: ['id', 'fullName', 'email']
+        }
+    ]
+};
+
 const getOwnedHotel = async (hotelId, reqUser, options = {}) => {
     const hotel = await db.Hotel.findOne({
         where: { id: hotelId, ...partnerScope(reqUser) },
@@ -44,7 +57,7 @@ const getAll = async ({ reqUser, filters = {} }) => {
         where,
         order: [['id', 'DESC']],
         include: [
-            { model: db.User, as: 'partner', attributes: ['id', 'fullName', 'email'] },
+            PARTNER_INCLUDE
         ],
     });
 };
@@ -54,8 +67,9 @@ const getById = async ({ id, reqUser }) => {
     const hotel = await db.Hotel.findOne({
         where,
         include: [
-            { model: db.User, as: 'partner', attributes: ['id', 'fullName', 'email'] },
-            { model: db.Room, as: 'rooms', required: false },
+            PARTNER_INCLUDE,
+            { model: db.RoomConfiguration, as: 'roomConfigurations', required: false },
+            { model: db.HotelImage, as: 'images', required: false },
         ],
     });
 
@@ -72,8 +86,8 @@ const create = async ({ reqUser, hotelName, address, wardId, cityId, description
         cityId,
         description,
         starRating,
-        status: 'PENDING',     
-        partnerId: reqUser.id,  
+        status: 'PENDING',
+        partnerId: reqUser.id,
     });
 
     return hotel;
@@ -208,7 +222,7 @@ const assignStaff = async ({ hotelId, staffId, reqUser }) => {
     const staff = await db.User.findOne({ where: { id: staffId, role: 'Staff' } });
     if (!staff) throw new AppError('Không tìm thấy nhân viên', 404);
 
-    await staff.update({ hotelId });
+    await staff.update({ hotel_id: hotelId });
     return { message: 'Gán nhân viên vào khách sạn thành công' };
 };
 

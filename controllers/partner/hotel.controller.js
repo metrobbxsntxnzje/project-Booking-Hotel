@@ -10,7 +10,7 @@ const handleError = (res, error) => {
     });
 };
 
-const getAll = async (req, res) => {
+const getAllController = async (req, res) => {
     try {
         const hotels = await hotelService.getAll({
             reqUser: req.user,
@@ -26,7 +26,7 @@ const getAll = async (req, res) => {
     }
 };
 
-const getById = async (req, res) => {
+const getByIdController = async (req, res) => {
     try {
         const hotel = await hotelService.getById({
             id: req.params.id,
@@ -42,7 +42,7 @@ const getById = async (req, res) => {
     }
 };
 
-const create = async (req, res) => {
+const createController = async (req, res) => {
     try {
         const hotel = await hotelService.create({
             ...req.body,
@@ -58,7 +58,7 @@ const create = async (req, res) => {
     }
 };
 
-const update = async (req, res) => {
+const updateController = async (req, res) => {
     try {
         const hotel = await hotelService.update({
             id: req.params.id,
@@ -75,7 +75,7 @@ const update = async (req, res) => {
     }
 };
 
-const remove = async (req, res) => {
+const removeController = async (req, res) => {
     try {
         const result = await hotelService.remove({
             id: req.params.id,
@@ -126,16 +126,12 @@ const removeImage = async (req, res) => {
 };
 
 module.exports = {
-    getAll,
-    getById,
-    create,
-    update,
-    remove,
+    getAllController,
+    getByIdController,
+    createController,
+    updateController,
+    removeController,
     uploadImages,
     removeImage,
-    getAllController: getAll,
-    getByIdController: getById,
-    createController: create,
-    updateController: update,
-    removeController: remove
+
 };

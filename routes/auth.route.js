@@ -14,7 +14,7 @@ router.post('/refresh-token', token.verifyRefreshToken)
 // router.post('/logout', logout)
 
 //private
-router.get('/me', authenticate);
+router.get('/me', authenticate, AuthController.meController);
 // router.patch('/change-password',     authenticate, validateChangePassword, changePassword);
 
 module.exports = router;
